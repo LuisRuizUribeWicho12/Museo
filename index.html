@@ -189,6 +189,7 @@
   <script>
 
   const video = document.getElementById("videoMuseo");
+  const VIDEO_INTRO = "videos/intro.mp4";
 
   // FORZAR REPRODUCCIÓN DEL INTRO
   window.addEventListener("load", async () => {
@@ -211,37 +212,65 @@
 
   function cambiarVideo(ruta){
 
-    // ACTIVAR AUDIO
-    video.muted = false;
+  // ACTIVAR AUDIO
+  video.muted = false;
 
-    // PAUSAR VIDEO ACTUAL
-    video.pause();
+  // QUITAR LOOP
+  video.loop = false;
 
-    // EFECTO FADE
-    video.classList.remove("fade");
+  // PAUSAR
+  video.pause();
 
-    void video.offsetWidth;
+  // EFECTO
+  video.classList.remove("fade");
 
-    video.classList.add("fade");
+  void video.offsetWidth;
 
-    // CAMBIAR VIDEO
-    video.src = ruta;
+  video.classList.add("fade");
 
-    // QUITAR LOOP DEL INTRO
-    video.loop = false;
+  // CAMBIAR VIDEO
+  video.src = ruta;
 
-    // CARGAR VIDEO
-    video.load();
+  // CARGAR
+  video.load();
 
-    // REPRODUCIR
-    video.play()
-    .catch(error => {
-      console.log(error);
-    });
-    
+  // REPRODUCIR
+  video.play()
+  .catch(error => {
+    console.log(error);
+  });
 
-  }
+  // CUANDO TERMINA UN VIDEO
+video.addEventListener("ended", () => {
 
+  // TRANSICIÓN
+  video.classList.remove("fade");
+
+  void video.offsetWidth;
+
+  video.classList.add("fade");
+
+  // VOLVER AL INTRO
+  video.src = VIDEO_INTRO;
+
+  // INTRO EN LOOP
+  video.loop = true;
+
+  // INTRO SILENCIOSO
+  video.muted = true;
+
+  // CARGAR
+  video.load();
+
+  // REPRODUCIR
+  video.play()
+  .catch(error => {
+    console.log(error);
+  });
+
+});
+
+}
   // FULLSCREEN AL PRIMER CLICK
   window.addEventListener("click", () => {
 
