@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Museo Interactivo</title>
+
+  <style>
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family:Arial, sans-serif;
+    }
+
+    body{
+      overflow:hidden;
+      background:black;
+      width:100vw;
+      height:100vh;
+      position:relative;
+    }
+
+    /* VIDEO FULLSCREEN */
+    #videoMuseo{
+      position:absolute;
+      top:0;
+      left:0;
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      background:black;
+      z-index:1;
+    }
+
+    /* CAPA OSCURA */
+    .overlay{
+      position:absolute;
+      inset:0;
+      background:rgba(0,0,0,0.35);
+      z-index:2;
+      pointer-events:none;
+    }
+
+    /* PANEL DE BOTONES */
+    .panel{
+      position:absolute;
+      bottom:40px;
+      left:50%;
+      transform:translateX(-50%);
+      display:flex;
+      gap:25px;
+      z-index:3;
+    }
+
+    /* BOTONES ESTILO MUSEO */
+    .btnMuseo{
+      width:120px;
+      height:120px;
+      border-radius:50%;
+      border:3px solid rgba(255,255,255,0.5);
+      background:rgba(255,255,255,0.08);
+      backdrop-filter:blur(10px);
+      color:white;
+      font-size:18px;
+      cursor:pointer;
+      transition:0.3s;
+      box-shadow:
+        0 0 15px rgba(255,255,255,0.15),
+        inset 0 0 10px rgba(255,255,255,0.1);
+    }
+
+    .btnMuseo:hover{
+      transform:scale(1.08);
+      background:rgba(255,255,255,0.15);
+      box-shadow:
+        0 0 25px rgba(255,255,255,0.35),
+        inset 0 0 15px rgba(255,255,255,0.15);
+    }
+
+    .btnMuseo:active{
+      transform:scale(0.96);
+    }
+
+    /* TITULO */
+    .titulo{
+      position:absolute;
+      top:40px;
+      width:100%;
+      text-align:center;
+      z-index:3;
+      color:white;
+      font-size:40px;
+      letter-spacing:4px;
+      text-transform:uppercase;
+      font-weight:300;
+      text-shadow:0 0 20px rgba(0,0,0,0.7);
+    }
+
+    /* EFECTO DE TRANSICIÓN */
+    .fade{
+      animation:fadeEffect 1s;
+    }
+
+    @keyframes fadeEffect{
+      from{
+        opacity:0;
+      }
+      to{
+        opacity:1;
+      }
+    }
+
+    #btnFullscreen{
+
+  position:absolute;
+
+  top:20px;
+  right:20px;
+
+  z-index:999;
+
+  padding:14px 22px;
+
+  border:none;
+  border-radius:12px;
+
+  background:rgba(0,0,0,0.6);
+
+  color:white;
+
+  font-size:16px;
+
+  cursor:pointer;
+
+  backdrop-filter:blur(10px);
+
+  transition:0.3s;
+
+  border:1px solid rgba(255,255,255,0.2);
+
+}
+
+#btnFullscreen:hover{
+
+  transform:scale(1.05);
+
+  background:rgba(255,255,255,0.15);
+
+}
+
+  </style>
+</head>
+
+<body>
+
+  <video
+  id="videoMuseo"
+  playsinline
+  loop>
+    <source src="videos/intro.mp4" type="video/mp4">
+  </video>
+
+  <div class="overlay"></div>
+
+  <div class="titulo">
+    Museo Interactivo
+  </div>
+
+  <div class="panel">
+
+    <button class="btnMuseo"
+      onclick="cambiarVideo('videos/Video1.mp4')">
+      Sala 1
+    </button>
+
+    <button class="btnMuseo"
+      onclick="cambiarVideo('videos/video2.mp4')">
+      Sala 2
+    </button>
+
+    <button class="btnMuseo"
+      onclick="cambiarVideo('videos/video3.mp4')">
+      Sala 3
+    </button>
+
+  </div>
+
+  <script>
+
+  const video = document.getElementById("videoMuseo");
+
+  // FORZAR REPRODUCCIÓN DEL INTRO
+  window.addEventListener("load", async () => {
+
+    try {
+
+      video.muted = true;
+
+      await video.play();
+
+      console.log("Intro reproduciéndose");
+
+    } catch(error){
+
+      console.log("Autoplay bloqueado:", error);
+
+    }
+
+  });
+
+  function cambiarVideo(ruta){
+
+    // ACTIVAR AUDIO
+    video.muted = false;
+
+    // PAUSAR VIDEO ACTUAL
+    video.pause();
+
+    // EFECTO FADE
+    video.classList.remove("fade");
+
+    void video.offsetWidth;
+
+    video.classList.add("fade");
+
+    // CAMBIAR VIDEO
+    video.src = ruta;
+
+    // QUITAR LOOP DEL INTRO
+    video.loop = false;
+
+    // CARGAR VIDEO
+    video.load();
+
+    // REPRODUCIR
+    video.play()
+    .catch(error => {
+      console.log(error);
+    });
+    
+
+  }
+
+  // FULLSCREEN AL PRIMER CLICK
+  window.addEventListener("click", () => {
+
+    const elem = document.documentElement;
+
+    if(!document.fullscreenElement){
+
+      elem.requestFullscreen();
+
+    }
+
+  }, { once:true });
+
+  const btnFullscreen = document.getElementById("btnFullscreen");
+
+btnFullscreen.addEventListener("click", async () => {
+
+  const elem = document.documentElement;
+
+  try{
+
+    // SI NO ESTÁ EN FULLSCREEN
+    if(!document.fullscreenElement){
+
+      await elem.requestFullscreen();
+
+      console.log("Fullscreen activado");
+
+    }else{
+
+      // SALIR DE FULLSCREEN
+      await document.exitFullscreen();
+
+      console.log("Fullscreen desactivado");
+
+    }
+
+  }catch(error){
+
+    console.log("Error fullscreen:", error);
+
+  }
+
+});
+
+</script>
+
+</body>
+<button id="btnFullscreen">
+  ⛶ Pantalla Completa
+</button>
+</html>
