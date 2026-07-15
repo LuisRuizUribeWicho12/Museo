@@ -1,325 +1,410 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Museo Interactivo</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WRC 2026</title>
 
-  <style>
-    *{
-      margin:0;
-      padding:0;
-      box-sizing:border-box;
-      font-family:Arial, sans-serif;
-    }
+    <style>
+        body {
+            margin: 30px;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f2f2f2;
+        }
 
-    body{
-      overflow:hidden;
-      background:black;
-      width:100vw;
-      height:100vh;
-      position:relative;
-    }
+        h1 {
+            text-align: center;
+            color: #1E4F7A;
+        }
 
-    /* VIDEO FULLSCREEN */
-    #videoMuseo{
-      position:absolute;
-      top:0;
-      left:0;
-      width:100%;
-      height:100%;
-      object-fit:cover;
-      background:black;
-      z-index:1;
-    }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, .15);
+        }
 
-    /* CAPA OSCURA */
-    .overlay{
-      position:absolute;
-      inset:0;
-      background:rgba(0,0,0,0.35);
-      z-index:2;
-      pointer-events:none;
-    }
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
 
-    /* PANEL DE BOTONES */
-    .panel{
-      position:absolute;
-      bottom:40px;
-      left:50%;
-      transform:translateX(-50%);
-      display:flex;
-      gap:25px;
-      z-index:3;
-    }
+        thead tr:first-child {
+            background: #1E4F7A;
+            color: white;
+        }
 
-    /* BOTONES ESTILO MUSEO */
-    .btnMuseo{
-      width:120px;
-      height:120px;
-      border-radius:50%;
-      border:3px solid rgba(255,255,255,0.5);
-      background:rgba(255,255,255,0.08);
-      backdrop-filter:blur(10px);
-      color:white;
-      font-size:18px;
-      cursor:pointer;
-      transition:0.3s;
-      box-shadow:
-        0 0 15px rgba(255,255,255,0.15),
-        inset 0 0 10px rgba(255,255,255,0.1);
-    }
+        thead tr:nth-child(2) {
+            background: #D7E7F5;
+            font-weight: bold;
+        }
 
-    .btnMuseo:hover{
-      transform:scale(1.08);
-      background:rgba(255,255,255,0.15);
-      box-shadow:
-        0 0 25px rgba(255,255,255,0.35),
-        inset 0 0 15px rgba(255,255,255,0.15);
-    }
+        .alumno {
+            text-align: left;
+            font-weight: bold;
+            background: #fafafa;
+        }
 
-    .btnMuseo:active{
-      transform:scale(0.96);
-    }
+        .total {
+            font-size: 18px;
+            font-weight: bold;
+            color: #1565C0;
+        }
 
-    /* TITULO */
-    .titulo{
-      position:absolute;
-      top:40px;
-      width:100%;
-      text-align:center;
-      z-index:3;
-      color:white;
-      font-size:40px;
-      letter-spacing:4px;
-      text-transform:uppercase;
-      font-weight:300;
-      text-shadow:0 0 20px rgba(0,0,0,0.7);
-    }
+        .celda {
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+        }
 
-    /* EFECTO DE TRANSICIÓN */
-    .fade{
-      animation:fadeEffect 1s;
-    }
+        button {
+            width: 42px;
+            height: 34px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            background: #d9d9d9;
+            font-weight: bold;
+            transition: .2s;
+        }
 
-    @keyframes fadeEffect{
-      from{
-        opacity:0;
-      }
-      to{
-        opacity:1;
-      }
-    }
+        button:hover {
+            transform: scale(1.08);
+        }
 
-    #btnFullscreen{
+        button.activo {
+            background: #4CAF50;
+            color: white;
+        }
 
-  position:absolute;
+        button:disabled {
+            background: #ececec;
+            color: #999;
+            cursor: not-allowed;
+        }
+    </style>
 
-  top:20px;
-  right:20px;
-
-  z-index:999;
-
-  padding:14px 22px;
-
-  border:none;
-  border-radius:12px;
-
-  background:rgba(0,0,0,0.6);
-
-  color:white;
-
-  font-size:16px;
-
-  cursor:pointer;
-
-  backdrop-filter:blur(10px);
-
-  transition:0.3s;
-
-  border:1px solid rgba(255,255,255,0.2);
-
-}
-
-#btnFullscreen:hover{
-
-  transform:scale(1.05);
-
-  background:rgba(255,255,255,0.15);
-
-}
-
-  </style>
 </head>
 
 <body>
 
-  <video
-  id="videoMuseo"
-  playsinline
-  loop>
-    <source src="videos/intro.mp4" type="video/mp4">
-  </video>
+    <h1>🏆 Competencia WRC 🏆</h1>
 
-  <div class="overlay"></div>
 
-  <div class="titulo">
-    Museo Interactivo
-  </div>
+    <table>
 
-  <div class="panel">
+        <thead>
 
-    <button class="btnMuseo"
-      onclick="cambiarVideo('videos/Video1.mp4')">
-      Sala 1
+            <tr>
+                <th rowspan="2">Alumno</th>
+                <th>SALIDA</th>
+                <th>LANZAMIENTO</th>
+                <th>VALIZA 1</th>
+                <th>ACOMPLAMIENTO</th>
+                <th>CAJA DE ENERGIA</th>
+                <th>PUENTE</th>
+                <th>VALIZA 2</th>
+                <th>BANDERAS</th>
+                <th>ATERRIZAJE</th>
+                <th>MAPA ESTELAR</th>
+
+                <th rowspan="2">TOTAL</th>
+            </tr>
+
+            <tr>
+                <th>60</th>
+                <th>60</th>
+                <th>20 + 40</th>
+                <th>60</th>
+                <th>60</th>
+                <th>60</th>
+                <th>20 + 40</th>
+                <th>60</th>
+                <th>60</th>
+                <th>10 + 50</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody id="tablaAlumnos">
+
+        </tbody>
+
+    </table>
+
+
+    <script>
+
+
+        // ========================
+        // LISTA DE ALUMNOS
+        // ========================
+
+        const alumnos = [
+            "Dante",
+            "Vicky",
+            "Carmen",
+            "Emiliano",
+            "Hansel",
+            "Denisse",
+            "Julio",
+            "Andrea"
+        ];
+
+
+        // ========================
+        // CONFIGURACIÓN RETOS
+        // ========================
+
+        const retos = [
+
+            {
+                nombre: "SALIDA",
+                botones: [
+                    { puntos: 60 }
+                ]
+            },
+
+            {
+                nombre: "LANZAMIENTO",
+                botones: [
+                    { puntos: 60 }
+                ]
+            },
+
+            {
+                nombre: "VALIZA 1",
+                botones: [
+                    {
+                        puntos: 20,
+                        grupo: "v1"
+                    },
+                    {
+                        puntos: 40,
+                        requiere: "v1"
+                    }
+                ]
+            },
+
+            {
+                nombre: "ACOPLAMIENTO",
+                botones: [
+                    { puntos: 60 }
+                ]
+            },
+
+            {
+                nombre: "CAJA DE ENERGIA",
+                botones: [
+                    { puntos: 60 }
+                ]
+            },
+
+            {
+                nombre: "PUENTE",
+                botones: [
+                    { puntos: 60 }
+                ]
+            },
+
+            {
+                nombre: "VALIZA 2",
+                botones: [
+                    {
+                        puntos: 20,
+                        grupo: "v2"
+                    },
+                    {
+                        puntos: 40,
+                        requiere: "v2"
+                    }
+                ]
+            },
+
+            {
+                nombre: "BANDERAS",
+                tipo: "select",
+                max: 10
+            },
+
+            {
+                nombre: "ATERRIZAJE",
+                botones: [
+                    { puntos: 60 }
+                ]
+            },
+
+            {
+                nombre: "MAPA ESTELAR",
+                botones: [
+                    {
+                        puntos: 10,
+                        grupo: "m1"
+                    },
+                    {
+                        puntos: 50,
+                        requiere: "m1"
+                    }
+                ]
+            }
+
+        ];
+
+        // ========================
+        // GENERAR TABLA
+        // ========================
+
+        const tabla = document.getElementById("tablaAlumnos");
+
+
+        alumnos.forEach(alumno => {
+
+
+            let fila = document.createElement("tr");
+
+
+            fila.innerHTML =
+                `
+    <td class="alumno">${alumno}</td>
+
+    ${retos.map(reto => `
+
+            <td>
+
+${reto.tipo === "select"
+                        ?
+
+                        `
+<input
+    type="number"
+    min="0"
+    max="10"
+    step="1"
+    value="0"
+    oninput="actualizarTotal(this.closest('tr'))">
+`
+
+                        :
+
+                        `
+    <div class="celda">
+
+    ${reto.botones.map(btn => `
+
+    <button
+    data-puntos="${btn.puntos}"
+    ${btn.grupo ? `data-grupo="${btn.grupo}"` : ""}
+    ${btn.requiere ?
+                                `data-requiere="${btn.requiere}" disabled`
+                                : ""}
+    onclick="toggleBoton(this)">
+
+    ${btn.puntos}
+
     </button>
 
-    <button class="btnMuseo"
-      onclick="cambiarVideo('videos/video2.mp4')">
-      Sala 2
-    </button>
+`).join("")
+                        }
 
-    <button class="btnMuseo"
-      onclick="cambiarVideo('videos/video3.mp4')">
-      Sala 3
-    </button>
+    </div>
+    `
+                    }
 
-  </div>
+</td>
 
-  <script>
+        `).join("")
+                }
 
-  const video = document.getElementById("videoMuseo");
-  const VIDEO_INTRO = "videos/intro.mp4";
 
-  // FORZAR REPRODUCCIÓN DEL INTRO
-  window.addEventListener("load", async () => {
+    <td class="total">0</td>
 
-    try {
+    `;
 
-      video.muted = true;
 
-      await video.play();
+            tabla.appendChild(fila);
 
-      console.log("Intro reproduciéndose");
 
-    } catch(error){
+        });
 
-      console.log("Autoplay bloqueado:", error);
 
-    }
 
-  });
 
-  function cambiarVideo(ruta){
+        // ========================
+        // ACTIVAR BOTONES
+        // ========================
 
-  // ACTIVAR AUDIO
-  video.muted = false;
+        function toggleBoton(btn) {
 
-  // QUITAR LOOP
-  video.loop = false;
 
-  // PAUSAR
-  video.pause();
+            if (btn.disabled) return;
 
-  // EFECTO
-  video.classList.remove("fade");
 
-  void video.offsetWidth;
+            btn.classList.toggle("activo");
 
-  video.classList.add("fade");
 
-  // CAMBIAR VIDEO
-  video.src = ruta;
+            const grupo = btn.dataset.grupo;
 
-  // CARGAR
-  video.load();
 
-  // REPRODUCIR
-  video.play()
-  .catch(error => {
-    console.log(error);
-  });
+            if (grupo) {
 
-  // CUANDO TERMINA UN VIDEO
-video.addEventListener("ended", () => {
 
-  // TRANSICIÓN
-  video.classList.remove("fade");
+                const contenedor = btn.parentElement;
 
-  void video.offsetWidth;
 
-  video.classList.add("fade");
+                const dependiente =
+                    contenedor.querySelector(
+                        `[data-requiere="${grupo}"]`
+                    );
 
-  // VOLVER AL INTRO
-  video.src = VIDEO_INTRO;
 
-  // INTRO EN LOOP
-  video.loop = true;
+                if (btn.classList.contains("activo")) {
 
-  // INTRO SILENCIOSO
-  video.muted = true;
+                    dependiente.disabled = false;
 
-  // CARGAR
-  video.load();
+                }
+                else {
 
-  // REPRODUCIR
-  video.play()
-  .catch(error => {
-    console.log(error);
-  });
+                    dependiente.disabled = true;
+                    dependiente.classList.remove("activo");
 
-});
+                }
 
-}
-  // FULLSCREEN AL PRIMER CLICK
-  window.addEventListener("click", () => {
 
-    const elem = document.documentElement;
+            }
 
-    if(!document.fullscreenElement){
 
-      elem.requestFullscreen();
+            actualizarTotal(btn.closest("tr"));
 
-    }
+        }
 
-  }, { once:true });
 
-  const btnFullscreen = document.getElementById("btnFullscreen");
 
-btnFullscreen.addEventListener("click", async () => {
 
-  const elem = document.documentElement;
+        function actualizarTotal(fila) {
 
-  try{
+            let total = 0;
 
-    // SI NO ESTÁ EN FULLSCREEN
-    if(!document.fullscreenElement){
+            // Sumar botones activos
+            fila.querySelectorAll(".activo").forEach(btn => {
+                total += Number(btn.dataset.puntos);
+            });
 
-      await elem.requestFullscreen();
+            // Sumar banderas (6 puntos por bandera)
+            fila.querySelectorAll('input[type="number"]').forEach(input => {
+                total += (Number(input.value) || 0) * 6;
+            });
 
-      console.log("Fullscreen activado");
+            fila.querySelector(".total").textContent = total;
 
-    }else{
+        }
 
-      // SALIR DE FULLSCREEN
-      await document.exitFullscreen();
+    </script>
 
-      console.log("Fullscreen desactivado");
-
-    }
-
-  }catch(error){
-
-    console.log("Error fullscreen:", error);
-
-  }
-
-});
-
-</script>
 
 </body>
-<button id="btnFullscreen">
-  ⛶ Pantalla Completa
-</button>
+
 </html>
