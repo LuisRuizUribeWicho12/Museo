@@ -18,13 +18,14 @@
             text-align: center;
             color: #1E4F7A;
         }
-        td {
-    width: 60px;
-}
 
-td input {
-    max-width: 50px;
-}
+        td {
+            width: 60px;
+        }
+
+        td input {
+            max-width: 50px;
+        }
 
         table {
             width: 100%;
@@ -140,7 +141,7 @@ td input {
                 <th>50</th>
                 <th>3:00.0</th>
                 <th>Max 30</th>
-                <th>680</th>
+                <th>600</th>
 
             </tr>
 
@@ -345,7 +346,7 @@ td input {
 
                             `
             <span class="smooth">50</span>
-            ` 
+            `
 
                             :
 
@@ -444,130 +445,133 @@ td input {
             actualizarTotal(btn.closest("tr"));
 
         }
-        
+
         function actualizarTotal(fila) {
 
-    let total = 0;
+            let total = 0;
 
 
-    //=========================
-    // BOTONES
-    //=========================
+            //=========================
+            // BOTONES
+            //=========================
 
-    fila.querySelectorAll(".activo").forEach(btn => {
-        total += Number(btn.dataset.puntos);
-    });
-
-
-    //=========================
-    // BANDERAS
-    //=========================
-
-    fila.querySelectorAll('input[type="number"]').forEach(input => {
-
-        if (input.classList.contains("reinicios"))
-            return;
-
-        total += (Number(input.value) || 0) * 6;
-    });
+            fila.querySelectorAll(".activo").forEach(btn => {
+                total += Number(btn.dataset.puntos);
+            });
 
 
-    //=========================
-    // SMOOTHNESS
-    //=========================
+            //=========================
+            // BANDERAS
+            //=========================
 
-    const inputReinicios = fila.querySelector(".reinicios");
+            fila.querySelectorAll('input[type="number"]').forEach(input => {
 
-    let reinicios = Number(inputReinicios.value) || 0;
+                if (input.classList.contains("reinicios"))
+                    return;
 
-    reinicios = Math.min(10, Math.max(0, reinicios));
+                total += (Number(input.value) || 0) * 6;
+            });
+            //=========================
+            // TAREAS BÁSICAS
+            //=========================
 
-    inputReinicios.value = reinicios;
+            const salida = fila.querySelector('[data-reto="salida"] button')
+                ?.classList.contains("activo");
 
+            const lanzamiento = fila.querySelector('[data-reto="lanzamiento"] button')
+                ?.classList.contains("activo");
 
-    let smooth = 50 - reinicios * 5;
+            const aterrizaje = fila.querySelector('[data-reto="aterrizaje"] button')
+                ?.classList.contains("activo");
 
-    if (smooth < 0)
-        smooth = 0;
+            const valiza = fila.querySelector('[data-reto="valiza"] button')
+                ?.classList.contains("activo");
 
-
-    fila.querySelector(".smooth").textContent = smooth;
-
-    total += smooth;
-
-
-
-    //=========================
-    // TIEMPO
-    //=========================
-
-    let tiempoPts = 0;
-
-
-    const salida = fila.querySelector('[data-reto="salida"] button')
-        ?.classList.contains("activo");
-
-    const lanzamiento = fila.querySelector('[data-reto="lanzamiento"] button')
-        ?.classList.contains("activo");
-
-    const aterrizaje = fila.querySelector('[data-reto="aterrizaje"] button')
-        ?.classList.contains("activo");
+            const tareasBasicas =
+                salida &&
+                lanzamiento &&
+                aterrizaje &&
+                valiza;
 
 
-    const valiza = fila.querySelector('[data-reto="valiza"] button')
-        ?.classList.contains("activo");
+            //=========================
+            // SMOOTHNESS
+            //=========================
+
+            const inputReinicios = fila.querySelector(".reinicios");
+
+            let reinicios = Number(inputReinicios.value) || 0;
+
+            reinicios = Math.min(10, Math.max(0, reinicios));
+
+            inputReinicios.value = reinicios;
+
+            let smooth = 0;
+
+            if (tareasBasicas) {
+
+                smooth = 50 - reinicios * 5;
+
+                if (smooth < 0)
+                    smooth = 0;
+            }
+
+            fila.querySelector(".smooth").textContent = smooth;
+
+            total += smooth;
 
 
-    if (salida && lanzamiento && aterrizaje && valiza) {
+            //=========================
+            // TIEMPO
+            //=========================
 
-        const tiempo = fila.querySelector(".tiempo").value.trim();
+            let tiempoPts = 0;
 
-        const partes = tiempo.split(":");
+            if (tareasBasicas) {
+
+                const tiempo = fila.querySelector(".tiempo").value.trim();
+
+                const partes = tiempo.split(":");
+
+                if (partes.length === 2) {
+
+                    const minutos = Number(partes[0]);
+                    const segundos = Number(partes[1]);
+
+                    const tiempoTotal = minutos * 60 + segundos;
+                    const sobrante = 180 - tiempoTotal;
+
+                    if (sobrante >= 30) {
+                        tiempoPts = 30;
+                    } else if (sobrante >= 20) {
+                        tiempoPts = 20;
+                    } else if (sobrante >= 10) {
+                        tiempoPts = 10;
+                    } else if (sobrante >= 3) {
+                        tiempoPts = 5;
+                    } else {
+                        tiempoPts = 0;
+                    }
+                }
+            }
+
+            fila.querySelector(".bono").textContent = tiempoPts;
+
+            total += tiempoPts;
 
 
-        if (partes.length === 2) {
+            //=========================
+            // MOSTRAR TOTAL
+            //=========================
 
-            const minutos = Number(partes[0]);
-            const segundos = Number(partes[1]);
+            fila.querySelector(".total").textContent = total;
 
-            const tiempoTotal = minutos * 60 + segundos;
-const sobrante = 180 - tiempoTotal;
-
-
-
-if (sobrante >= 30) {
-    tiempoPts = 30;
-} else if (sobrante >= 20) {
-    tiempoPts = 20;
-} else if (sobrante >= 10) {
-    tiempoPts = 10;
-} else if (sobrante >= 3) {
-    tiempoPts = 5;
-} else {
-    tiempoPts = 0;
-}
         }
-    }
-
-
-    fila.querySelector(".bono").textContent = tiempoPts;
-
-
-    total += tiempoPts;
-
-
-    //=========================
-    // MOSTRAR TOTAL
-    //=========================
-
-    fila.querySelector(".total").textContent = total;
-
-}
 
 
 
-        
-        </script>
+
+    </script>
 
 
 </body>
