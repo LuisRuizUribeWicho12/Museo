@@ -171,7 +171,10 @@
             "Julio",
             "Andrea"
         ];
-
+        for (let i = alumnos.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [alumnos[i], alumnos[j]] = [alumnos[j], alumnos[i]];
+        }
 
         // ========================
         // CONFIGURACIÓN RETOS
@@ -508,13 +511,11 @@
 
             let smooth = 0;
 
-            if (tareasBasicas) {
-
                 smooth = 50 - reinicios * 5;
 
                 if (smooth < 0)
                     smooth = 0;
-            }
+            
 
             fila.querySelector(".smooth").textContent = smooth;
 
